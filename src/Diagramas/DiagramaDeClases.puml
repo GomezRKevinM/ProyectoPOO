@@ -1,0 +1,187 @@
+@startuml diagrama
+'clases
+
+class Producto{
+    + codigo : int
+    + nombre : String
+    + marca : String
+    + precio : double
+    + descripcion : String
+    + imagen : String
+    + tiempoGarantia : int
+    + precioUnitario : double
+    + descuento : double
+    + iva : double
+    + unidades : int
+    + unidadesSolicitadas : int
+    + stock : int
+    + ivaSinDescuento : double
+    + ivaConDescuento : double
+    + disponibilidad : boolean
+}
+
+class Categoria{
+    + codigo : int
+    + nombre : String
+    + icono : String
+}
+
+class Servicio{
+    + codigo : int
+    + nombre : String
+    + precioVenta : double
+    + porcentajeIva : double
+    + valorCorrespondienteIva : double
+    + precioTotalConIva : double
+    + descuento : double
+    + precioTotal : double 
+    + descripcion : String
+    + fechaInicio : Date
+    + fechaFinal : Date
+    + imagen : String
+    + disponibilidad : boolean
+}
+
+class Empleado{
+    + nombre : String
+    + apellidos : String
+    + identificacion : String
+    + tipoDeIdentificacion : String
+    + fechaNacimiento : Date
+    + genero : String
+    + email : String
+    + direccion : String
+    + numCelular : String
+    + cargo : String
+    + sueldoBase : double
+    + horarioTrabajo : String
+    + fechaInicio : Date
+    + fechaCierre : Date
+    + horasTrabajadas : double
+}
+
+class Cliente{
+    + nombre : String
+    + apellido : String
+    + identificacion : String
+    + email : String
+    + telefono : String
+}
+
+class Vehiculo {
+    + marca : String
+    + modelo : String
+    + placa : String
+    + color : String
+    + planta : String
+    + ordenLlegada : int
+}
+
+class cubiculo{
+    + codigo : String
+    + nombre : String
+    + area : String
+    + estado : String
+    + getEstado() : String
+    + getArea() : String
+    + getNombre : String
+    + getCodigo : String
+    + setEstado() : void
+}
+
+class Empresa {
+    + codigo : String
+    + nombre : String
+    + informacionDePago : InformacionPago
+}
+
+class Proveedor{
+    + codigo : String
+    + nombre : String
+    + productos : List<Producto>
+}
+
+class Cotizacion{
+    + codigo : String
+    + estado : String
+}
+class Pedido{
+    + codigo : String
+    + fechaEmision : Date
+    + fechaExpiracion : Date
+    + tiempoMaxEntrega : int
+    + estado : String
+    + productos : List<Producto>
+    + proveedor : Proveedor
+}
+class notaCorreccion{
+    + codigo : String
+    + fechaEmision : Date
+    + fechaMaxConfirmacion : Date
+    + fechaMaxEntrega : Date
+    + errorList : List<Producto>
+}
+class OrdendeVenta{
+    + fechaSolicitud : Date
+    + productos : List<Producto>
+    + servicios : List<Servicio>
+    + precioTotalProductos : double
+    + precioTotalServicios : double
+    + totalPagar : double
+}
+
+class InformacionPago {
+    + nombreDeEmpresa : String
+    + direccion : String
+    + telefono : String
+    + email : String
+    + cuentas : List<cuentaPago>
+}
+
+class cuentaPago{
+    + banco: String
+    + numeroDeCuenta: String
+    + tipodeCuenta : String
+}
+
+class ComprobantePago{
+    + codigo : String
+    + fechaPago : Date
+    + informacionDePago : String
+    + valor : double
+}
+class colaDeEspera{
+    + fecha : Date
+    + siguiente : int
+    + esperando : List<Vehiculo>
+    + atendiendo : List<Vehiculo>
+    + atendidos : List<Vehiculo>
+    + colaDeEspera(fecha : Date,esperando : List<Vehiculo> )
+    + confirmAtendido(vehiculo : Vehiculo)
+    + pasarAtendiendo(vehiculo : Vehiculo)
+    + addColaEspera(vehiculo : Vehiculo)
+}
+
+'relaciones
+
+Producto "*" -- "1" Categoria : Contiene
+Producto "*" -- "1" Pedido : sí no hay errores
+Proveedor  <--  notaCorreccion : envia los errores
+Servicio "*" -- "1" Categoria : Puede tener
+Cliente "1" -- "1" Vehiculo : tiene
+Categoria "*" -- "1" Empresa : Ofrece
+Empleado "1" -- "*" Cliente : Atiende
+Empleado "1" -- "1" OrdendeVenta : Crea
+Empleado "*" --> "1" colaDeEspera : revisa la cola
+Empresa "1" -- "*" Empleado : posee
+Empleado "1" --> "1" Cotizacion : Realiza
+Cotizacion "1" --> "1" Empleado : Es revisada
+Empresa "*" -- "*" Proveedor : Puede tener
+Pedido "1" <-- "1" Proveedor : Subministra
+Pedido "1" --> "*" notaCorreccion : sí hay errores
+Empresa "1" -- "1" InformacionPago : Tiene
+Proveedor -- InformacionPago : Tiene
+InformacionPago "1" -- "*" cuentaPago : Metodos de pago
+Producto --> "1" ComprobantePago : Se pagan los productos ingresados al stock
+
+@enduml
